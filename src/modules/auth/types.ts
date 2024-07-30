@@ -1,5 +1,5 @@
 export type UserData = {
     id: number
-    username: String
-    password: String
+    username: string
+    password: string
 }
