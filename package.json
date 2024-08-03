@@ -9,17 +9,25 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@headlessui/vue": "^1.7.22",
+    "@vant/lazyload": "^1.4.0",
     "axios": "^1.7.2",
+    "dayjs": "^1.11.12",
     "vue": "^3.4.31",
     "vue-router": "^4.4.0",
     "vuex": "^4.1.0"
   },
   "devDependencies": {
+    "@tailwindcss/ui": "^0.7.2",
+    "@types/axios": "^0.14.0",
     "@vitejs/plugin-vue": "^5.0.5",
+    "@vue/compiler-sfc": "^3.4.34",
+    "autoprefixer": "^10.4.19",
     "concurrently": "^8.2.2",
     "tailwindcss": "^3.4.7",
     "typescript": "^5.2.2",
     "vite": "^5.3.4",
     "vue-tsc": "^2.0.24"
-  }
+  },
+  "packageManager": "yarn@3.6.0+sha512.418e45c2268c4d6b69a28f3939084b5853d5f392c43c0b5588bd1995a96e328414ae4b7777a8980c64bad4328c52586ff879b289f98ae65372a55fa4d0ff70dd"
 }
