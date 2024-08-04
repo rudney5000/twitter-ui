@@ -1,6 +1,6 @@
+import authRoutes from "./auth/routes.ts";
 import {RouteRecordRaw} from "vue-router";
 import Root from "./root/index.vue";
-import authRoutes from "./auth/routes.ts";
 
 const routes: RouteRecordRaw[] = [
     {

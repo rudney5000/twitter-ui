@@ -1,12 +1,13 @@
 import {
+    createStore,
+    createLogger,
+    useStore as useVuexStore,
+    ModuleTree,
+    Store as VuexStore,
     ActionContext,
     CommitOptions,
-    createLogger,
-    createStore,
-    DispatchOptions,
-    ModuleTree
-} from "vuex";
-
+    DispatchOptions, Store,
+} from 'vuex'
 import {authModule, AuthModule} from './modules/auth/store'
 export type AnyRecord = Record<any, any>
 
@@ -44,8 +45,8 @@ type StoreModules = {
   auth: AuthModule
 }
 
-export type Store = ThemeModule<Pick<StoreModules, 'theme'>> &
-  AuthModule<Pick<StoreModules, 'auth'>>
+// export type Store = ThemeModule<Pick<StoreModules, 'theme'>> &
+//   AuthModule<Pick<StoreModules, 'auth'>>
 
 const modules: ModuleTree<any> = {
   authModule,

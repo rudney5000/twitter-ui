@@ -35,7 +35,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@vitejs/plugin-vue", "virtual:81e769f38b29ba70b232f32a81dae9d719cb314b3ddf713c390d0089ffef4f71160ada75d1c8572975a09f495864d435226bd02c55f8263cdfe5c88bf5c027d3#npm:5.1.1"],\
             ["@vue/compiler-sfc", "npm:3.4.34"],\
             ["autoprefixer", "virtual:81e769f38b29ba70b232f32a81dae9d719cb314b3ddf713c390d0089ffef4f71160ada75d1c8572975a09f495864d435226bd02c55f8263cdfe5c88bf5c027d3#npm:10.4.19"],\
-            ["axios", "npm:1.7.2"],\
+            ["axios", "npm:1.7.3"],\
             ["concurrently", "npm:8.2.2"],\
             ["dayjs", "npm:1.11.12"],\
             ["tailwindcss", "npm:3.4.7"],\
@@ -1176,6 +1176,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/axios-npm-1.7.2-c89264f6f7-e457e2b0ab.zip/node_modules/axios/",\
           "packageDependencies": [\
             ["axios", "npm:1.7.2"],\
+            ["follow-redirects", "virtual:c89264f6f79513b22a07db5e53adf77eba9e48634cf471fb55eb2e75d910809bbac48d9ce7a920c63c8ff2780624fff91866270d8acf614cbd0c4cb748a8b29a#npm:1.15.6"],\
+            ["form-data", "npm:4.0.0"],\
+            ["proxy-from-env", "npm:1.1.0"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:1.7.3", {\
+          "packageLocation": "./.yarn/cache/axios-npm-1.7.3-a63743a582-bc304d6da9.zip/node_modules/axios/",\
+          "packageDependencies": [\
+            ["axios", "npm:1.7.3"],\
             ["follow-redirects", "virtual:c89264f6f79513b22a07db5e53adf77eba9e48634cf471fb55eb2e75d910809bbac48d9ce7a920c63c8ff2780624fff91866270d8acf614cbd0c4cb748a8b29a#npm:1.15.6"],\
             ["form-data", "npm:4.0.0"],\
             ["proxy-from-env", "npm:1.1.0"]\
@@ -3725,7 +3735,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@vitejs/plugin-vue", "virtual:81e769f38b29ba70b232f32a81dae9d719cb314b3ddf713c390d0089ffef4f71160ada75d1c8572975a09f495864d435226bd02c55f8263cdfe5c88bf5c027d3#npm:5.1.1"],\
             ["@vue/compiler-sfc", "npm:3.4.34"],\
             ["autoprefixer", "virtual:81e769f38b29ba70b232f32a81dae9d719cb314b3ddf713c390d0089ffef4f71160ada75d1c8572975a09f495864d435226bd02c55f8263cdfe5c88bf5c027d3#npm:10.4.19"],\
-            ["axios", "npm:1.7.2"],\
+            ["axios", "npm:1.7.3"],\
             ["concurrently", "npm:8.2.2"],\
             ["dayjs", "npm:1.11.12"],\
             ["tailwindcss", "npm:3.4.7"],\

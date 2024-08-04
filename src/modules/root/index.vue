@@ -20,8 +20,13 @@ export default defineComponent({
     const showRegisterDialog = ref(false)
 
     async function register({username, password}: RegisterData){
-      await store.dispatch(Action.)
+      await store.dispatch(Action.UserActionTypes.REGISTER_ACCOUNT, {
+        username,
+        password
+      })
+      router.push('/home')
     }
+    return {showRegisterDialog, register}
   }
 })
 </script>

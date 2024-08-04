@@ -1,32 +1,40 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+<script lang="ts">
+import {defineComponent, h, resolveComponent} from "vue";
+import {useRouter} from "vue-router";
+import {useStore} from "./store.ts";
+import axios from "./http/axios.ts";
+import {Action} from "./modules/storeActionTypes.ts";
 
+export default defineComponent({
+  setup(){
+    const store = useStore()
+    const router = useRouter()
+    const RouterView = resolveComponent('router-view')
+
+    const responseInterceptor = axios.interceptors.response.use(
+        (res) => res,
+        async (error) => {
+          if (error.response.status === 401){
+            axios.interceptors.response.eject(responseInterceptor)
+            await store.dispatch(Action.AuthActionTypes.GET_USER_DATA)
+            if (!store.getters['isLoggedIn']){
+              router.push('/login')
+              return Promise.reject(error)
+            }
+          }
+        }
+    )
+
+    return() => h(RouterView)
+  }
+})
 
 </script>
 
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+
 </template>
 
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
+
 </style>
