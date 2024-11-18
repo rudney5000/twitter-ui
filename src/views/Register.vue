@@ -9,15 +9,13 @@ const router = useRouter()
 const authStore = useAuthStore()
 
 const formData = ref({
-  name: '',
-  email: '',
+  username: '',
   password: '',
   confirmPassword: ''
 })
 
 const rules = {
-  name: { required, minLength: minLength(2) },
-  email: { required, email: emailValidator },
+  username: { required, email: emailValidator },
   password: { required, minLength: minLength(6) },
   confirmPassword: { required, sameAsPassword: sameAs(computed(() => formData.value.password)) }
 }
@@ -29,7 +27,10 @@ const handleRegister = async () => {
   if (!isFormCorrect) return
 
   try {
-    await authStore.register(formData.value.name, formData.value.email, formData.value.password)
+    await authStore.register(
+        formData.value.username,
+        formData.value.password
+    )
     router.push('/home')
   } catch (error) {
     console.error('Registration failed:', error)
@@ -43,31 +44,17 @@ const handleRegister = async () => {
       <h1>Create your account</h1>
       <form @submit.prevent="handleRegister">
         <div class="form-group">
-          <label for="name">Name</label>
-          <input
-              id="name"
-              type="text"
-              v-model="formData.name"
-              :class="{ 'error': v$.name.$error }"
-              placeholder="Enter your name"
-          />
-          <div class="error-message" v-if="v$.name.$error">
-            <span v-if="v$.name.required.$invalid">Name is required</span>
-            <span v-else-if="v$.name.minLength.$invalid">Name must be at least 2 characters</span>
-          </div>
-        </div>
-        <div class="form-group">
           <label for="email">Email</label>
           <input
               id="email"
               type="email"
-              v-model="formData.email"
-              :class="{ 'error': v$.email.$error }"
+              v-model="formData.username"
+              :class="{ 'error': v$.username.$error }"
               placeholder="Enter your email"
           />
-          <div class="error-message" v-if="v$.email.$error">
-            <span v-if="v$.email.required.$invalid">Email is required</span>
-            <span v-else-if="v$.email.email.$invalid">Please enter a valid email</span>
+          <div class="error-message" v-if="v$.username.$error">
+            <span v-if="v$.username.required.$invalid">Email is required</span>
+            <span v-else-if="v$.username.username.$invalid">Please enter a valid email</span>
           </div>
         </div>
         <div class="form-group">

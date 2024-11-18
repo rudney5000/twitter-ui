@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import api from '../api/axios'
 import type { Tweet, CreateTweetData, UpdateTweetData, TweetResponse } from '../types/tweet'
 
 export const useTweetStore = defineStore('tweet', () => {
@@ -9,17 +8,21 @@ export const useTweetStore = defineStore('tweet', () => {
     const error = ref<string | null>(null)
 
     // Get all tweets
-    const fetchTweets = async () => {
-        isLoading.value = true
-        error.value = null
+    const fetchTweets = async (page = 0, limit = 26) => {
+        isLoading.value = true;
+        error.value = null;
+
         try {
-            const response = await api.get<Tweet[]>('/tweets')
-            tweets.value = response.data
+            const response = await api.get<PaginatedResponse<Tweet>>(`/tweets?page=${page}&limit=${limit}`);
+            tweets.value = response.data.content;
+            totalPages.value = response.data.totalPages;
+            totalElements.value = response.data.totalElements;
+            currentPage.value = response.data.currentPage;
         } catch (err) {
-            error.value = 'Failed to fetch tweets'
-            console.error('Error fetching tweets:', err)
+            error.value = 'Failed to fetch tweets';
+            console.error('Error fetching tweets:', err);
         } finally {
-            isLoading.value = false
+            isLoading.value = false;
         }
     }
 

@@ -10,12 +10,12 @@ const router = useRouter()
 const authStore = useAuthStore()
 
 const formData = ref({
-  email: '',
+  username: '',
   password: ''
 })
 
 const rules = {
-  email: { required, email: emailValidator },
+  username: { required, username: emailValidator },
   password: { required, minLength: minLength(6) }
 }
 
@@ -26,7 +26,7 @@ const handleLogin = async () => {
   if (!isFormCorrect) return
 
   try {
-    await authStore.login(formData.value.email, formData.value.password)
+    await authStore.login(formData.value.username, formData.value.password)
     router.push('/home')
   } catch (error) {
     console.error('Login failed:', error)
@@ -44,13 +44,13 @@ const handleLogin = async () => {
           <input
               id="email"
               type="email"
-              v-model="formData.email"
-              :class="{ 'error': v$.email.$error }"
+              v-model="formData.username"
+              :class="{ 'error': v$.username.$error }"
               placeholder="Enter your email"
           />
-          <div class="error-message" v-if="v$.email.$error">
-            <span v-if="v$.email.required.$invalid">Email is required</span>
-            <span v-else-if="v$.email.email.$invalid">Please enter a valid email</span>
+          <div class="error-message" v-if="v$.username.$error">
+            <span v-if="v$.username.required.$invalid">Email is required</span>
+            <span v-else-if="v$.username.username.$invalid">Please enter a valid email</span>
           </div>
         </div>
         <div class="form-group">

@@ -1,43 +1,33 @@
 <script setup lang="ts">
 
-// const route = useRoute()
-// const authStore = useAuthStore()
+import {userProfileStore} from "../stores/profile.ts"
+import {onMounted, ref} from "vue";
 
-// const profile = {
-//   id: route.params.id as string,
-//   name: authStore.user?.name || 'User',
-//   handle: '@user',
-//   bio: 'Software Developer | Vue.js Enthusiast',
-//   following: 234,
-//   followers: 567,
-//   joinDate: 'March 2024'
-// }
-const profile = {
-  id: 1,
-  name: 'User',
-  handle: '@user',
-  bio: 'Software Developer | Vue.js Enthusiast',
-  following: 234,
-  followers: 567,
-  joinDate: 'March 2024'
+const profileStore = userProfileStore()
+
+const nickname = ref('');
+const imageLink = ref('');
+
+const registerProfile = async () => {
+  try {
+    await profileStore.registerUserProfile(nickname.value, imageLink.value);
+    console.log("Profile saved successfully")
+  } catch (error){
+    console.log('Failed to save profile:', error)
+  }
 }
 
-const tweets = [
-  {
-    id: 1,
-    content: 'Excited to be part of the Vue.js community! 🎉',
-    likes: 25,
-    retweets: 5,
-    timestamp: '1d'
-  },
-  {
-    id: 2,
-    content: 'Just deployed my first Vue.js application! Check it out! 🚀',
-    likes: 42,
-    retweets: 8,
-    timestamp: '2d'
+onMounted(async () => {
+  try {
+    await profileStore.fetchUserProfile();
+    if (profileStore.profile.value) {
+      nickname.value = profileStore.profile.value.nickname;
+      imageLink.value = profileStore.profile.value.imageLink;
+    }
+  } catch (err) {
+    console.error('Error fetching profile:', err);
   }
-]
+});
 </script>
 
 <template>

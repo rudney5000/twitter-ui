@@ -1,48 +1,43 @@
 <script setup lang="ts">
-// const authStore = useAuthStore()
-// const tweetStore = useTweetStore()
-// const tweetContent = ref('')
-// const isLoading = ref(false)
-//
-// const handleTweet = async () => {
-//   if (!tweetContent.value.trim()) return
-//
-//   isLoading.value = true
-//   try {
-//     await tweetStore.createTweet({ content: tweetContent.value })
-//     tweetContent.value = ''
-//   } catch (error) {
-//     console.error('Failed to create tweet:', error)
-//   } finally {
-//     isLoading.value = false
-//   }
-// }
+import {useAuthStore} from "../stores/auth.ts";
+import {useTweetStore} from "../stores/tweet.ts";
+import {ref} from "vue";
+import {CreateTweetData} from "../types/tweet.ts";
+
+const authStore = useAuthStore()
+const tweetStore = useTweetStore()
+const tweetContent = ref('')
+const isLoading = ref(false)
+
+const handleTweet = async () => {
+  if (!tweetContent.value.trim()) return
+
+  isLoading.value = true
+  try {
+    const data: CreateTweetData = {
+      message: tweetContent.value
+    }
+    await tweetStore.createTweet(data);
+    tweetContent.value = '';
+  } catch (error) {
+    console.error('Failed to create tweet:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
 </script>
 
 <template>
-<!--  <div class="create-tweet">-->
-<!--    <img :src="`https://api.dicebear.com/7.x/avatars/svg?seed=${authStore.user?.id}`" alt="avatar" class="avatar" />-->
-<!--    <div class="content">-->
-<!--      <textarea-->
-<!--          v-model="tweetContent"-->
-<!--          placeholder="What's happening?"-->
-<!--          :disabled="isLoading"-->
-<!--      ></textarea>-->
-<!--      <div class="actions">-->
-<!--        <button class="btn" @click="handleTweet" :disabled="!tweetContent.trim() || isLoading">-->
-<!--          Tweet-->
-<!--        </button>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
   <div class="create-tweet">
-    <img :src="`https://api.dicebear.com/7.x/avatars/svg?seed=`" alt="avatar" class="avatar" />
+<!--    <img :src="`https://api.dicebear.com/7.x/avatars/svg?seed=${authStore.user?.id}`" alt="avatar" class="avatar" />-->
     <div class="content">
       <textarea
+          v-model="tweetContent"
           placeholder="What's happening?"
+          :disabled="isLoading"
       ></textarea>
       <div class="actions">
-        <button class="btn">
+        <button class="btn" @click="handleTweet" :disabled="!tweetContent.trim() || isLoading">
           Tweet
         </button>
       </div>

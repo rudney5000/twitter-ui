@@ -1,25 +1,14 @@
 export interface Tweet {
     id: string
-    content: string
-    author: {
-        id: string
-        name: string
-        handle: string
-    }
-    likes: number
-    retweets: number
-    comments: number
-    timestamp: string
-    isLiked?: boolean
-    isRetweeted?: boolean
+    message: string
 }
 
 export interface CreateTweetData {
-    content: string
+    message: string
 }
 
 export interface UpdateTweetData {
-    content: string
+    message: string
 }
 
 export interface TweetResponse {

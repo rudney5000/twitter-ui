@@ -2,10 +2,9 @@ import axios from 'axios'
 
 const Http = axios.create({
     baseURL: import.meta.env.VITE_APP_URL,
-    headers: {
-        'Access-Control-Allow-Origin': '*'
-    },
-    withCredentials: true
+    // headers: {
+    //     'Access-Control-Allow-Origin': '*'
+    // },
 });
 
 // Add request interceptor
