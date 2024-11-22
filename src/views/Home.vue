@@ -2,29 +2,30 @@
 
 import CreateTweet from "../components/CreateTweet.vue";
 import {useTweetStore} from "../stores/tweet.ts";
-import {onMounted} from "vue";
+import {onMounted, watch} from "vue";
+import {useAuthStore} from "../stores/auth.ts";
 
 const tweetStore = useTweetStore()
+const authStore = useAuthStore()
 
-onMounted(async () => {
-  await tweetStore.fetchTweets()
-})
 
-const handleLike = async (tweetId: string) => {
-  try {
-    await tweetStore.likeTweet(tweetId)
-  } catch (error) {
-    console.error('Failed to like tweet:', error)
+onMounted(() => {
+  if (authStore.isAuthenticated) {
+    tweetStore.loadTweets(1, 10);
+  } else {
+    console.warn("L'utilisateur n'est pas authentifié.");
   }
-}
+});
 
-const handleRetweet = async (tweetId: string) => {
-  try {
-    await tweetStore.retweet(tweetId)
-  } catch (error) {
-    console.error('Failed to retweet:', error)
-  }
-}
+watch(
+    () => authStore.isAuthenticated,
+    (isAuthenticated) => {
+      if (isAuthenticated) {
+        tweetStore.loadTweets();
+      }
+    }
+);
+
 </script>
 
 <template>
@@ -44,31 +45,28 @@ const handleRetweet = async (tweetId: string) => {
 
   <div v-else class="tweets">
     <article v-for="tweet in tweetStore.tweets" :key="tweet.id" class="tweet">
-      <img :src="`https://api.dicebear.com/7.x/avatars/svg?seed=${tweet.author.id}`" alt="avatar" class="avatar" />
+<!--      <img :src="`https://api.dicebear.com/7.x/avatars/svg?seed=${tweet.author.id}`" alt="avatar" class="avatar" />-->
       <div class="tweet-content">
         <div class="tweet-header">
-          <span class="author">{{ tweet.author.name }}</span>
-          <span class="handle">{{ tweet.author.handle }}</span>
-          <span class="timestamp">{{ tweet.timestamp }}</span>
+<!--          <span class="author">{{ tweet.author.name }}</span>-->
+<!--          <span class="handle">{{ tweet.author.handle }}</span>-->
+          <span class="timestamp">{{ tweet.createdTimestamp }}</span>
         </div>
-        <p class="text">{{ tweet.content }}</p>
+        <p class="text">{{ tweet.message }}</p>
         <div class="tweet-actions">
           <button class="action-btn">
-            💬 {{ tweet.comments }}
+            💬
           </button>
           <button
               class="action-btn"
-              :class="{ 'active': tweet.isRetweeted }"
-              @click="handleRetweet(tweet.id)"
           >
-            🔄 {{ tweet.retweets }}
+            🔄
           </button>
           <button
               class="action-btn"
-              :class="{ 'active': tweet.isLiked }"
-              @click="handleLike(tweet.id)"
+
           >
-            ❤️ {{ tweet.likes }}
+            ❤️
           </button>
         </div>
       </div>
