@@ -1,88 +1,104 @@
 <script setup lang="ts">
 
-import {userProfileStore} from "../stores/profile.ts"
-import {onMounted, ref} from "vue";
+import {ref} from "vue";
 
-const profileStore = userProfileStore()
+const showModal = ref(false);
 
-const nickname = ref('');
-const imageLink = ref('');
+// Fonction pour ouvrir la modale
+const openModal = () => {
+  showModal.value = true
+};
 
-const registerProfile = async () => {
-  try {
-    await profileStore.registerUserProfile(nickname.value, imageLink.value);
-    console.log("Profile saved successfully")
-  } catch (error){
-    console.log('Failed to save profile:', error)
-  }
+// Fonction pour fermer la modale
+const closeModal = () => {
+  showModal.value = false
+};
+
+const submitProfile = () => {
+  closeModal()
 }
-
-onMounted(async () => {
-  try {
-    await profileStore.fetchUserProfile();
-    if (profileStore.profile.value) {
-      nickname.value = profileStore.profile.value.nickname;
-      imageLink.value = profileStore.profile.value.imageLink;
-    }
-  } catch (err) {
-    console.error('Error fetching profile:', err);
-  }
-});
 </script>
 
 <template>
   <div class="profile">
     <header class="header">
-      <h1>{{ profile.name }}</h1>
-      <div class="tweet-count">{{ tweets.length }} Tweets</div>
+      <h1>name of profile</h1>
+      <div class="tweet-count">Tweets</div>
     </header>
 
     <div class="profile-header">
       <div class="banner"></div>
       <div class="profile-info">
-        <img :src="`https://api.dicebear.com/7.x/avatars/svg?seed=${profile.id}`" alt="avatar" class="avatar" />
+<!--        <img :src="`https://api.dicebear.com/7.x/avatars/svg?seed=${profile.id}`" alt="avatar" class="avatar" />-->
         <div class="info">
-          <h2>{{ profile.name }}</h2>
-          <p class="handle">{{ profile.handle }}</p>
-          <p class="bio">{{ profile.bio }}</p>
-          <p class="join-date">🗓️ Joined {{ profile.joinDate }}</p>
+          <h2>name of profile</h2>
+          <p class="handle">handle of profile</p>
+          <p class="bio">biography of profile</p>
+          <p class="join-date">🗓️ Joined date of profile</p>
           <div class="stats">
-            <span><strong>{{ profile.following }}</strong> Following</span>
-            <span><strong>{{ profile.followers }}</strong> Followers</span>
+            <span><strong>following of profile</strong> Following</span>
+            <span><strong>followers of profile</strong> Followers</span>
           </div>
         </div>
 <!--        <button v-if="profile.id !== authStore.user?.id" class="btn btn&#45;&#45;outline">-->
 <!--          Follow-->
 <!--        </button>-->
-        <button v-if="profile.id" class="btn btn--outline">
-          Follow
-        </button>
+        <div class="btns">
+          <button class="btn btn--outline">
+            Follow
+          </button>
+          <button @click="openModal" class="btn btn1 btn--outline">
+            Update
+          </button>
+        </div>
+      </div>
+
+      <div v-if="showModal" class="modal-overlay" @click="closeModal">
+        <div class="modal-content" @click.stop>
+          <h2>Créer ou Modifier le Profil</h2>
+          <form @submit.prevent="submitProfile">
+            <div>
+              <div class="form-group">
+                <label for="profile-name">nickname</label>
+                <input type="text" id="profile-handle" v-model="profileNickname" placeholder="Nickname" required />
+              </div>
+              <div class="form-group">
+                <label for="profile-imgLink">imgLink</label>
+                <input type="text" id="profile-imgLink" v-model="profileHandle" placeholder="imgLink" required />
+              </div>
+            </div>
+
+
+            <button type="submit" class="btn">Enregistrer</button>
+            <button type="button" @click="closeModal" class="btn">Fermer</button>
+          </form>
+        </div>
       </div>
     </div>
 
-    <div class="tweets">
-      <article v-for="tweet in tweets" :key="tweet.id" class="tweet">
-        <img :src="`https://api.dicebear.com/7.x/avatars/svg?seed=${profile.id}`" alt="avatar" class="avatar" />
-        <div class="tweet-content">
-          <div class="tweet-header">
-            <span class="author">{{ profile.name }}</span>
-            <span class="timestamp">{{ tweet.timestamp }}</span>
-          </div>
-          <p class="text">{{ tweet.content }}</p>
-          <div class="tweet-actions">
-            <button class="action-btn">
-              💬 {{ Math.floor(Math.random() * 10) }}
-            </button>
-            <button class="action-btn">
-              🔄 {{ tweet.retweets }}
-            </button>
-            <button class="action-btn">
-              ❤️ {{ tweet.likes }}
-            </button>
-          </div>
-        </div>
-      </article>
-    </div>
+<!--    <div class="tweets">-->
+<!--      <article v-for="tweet in tweets" :key="tweet.id" class="tweet">-->
+<!--        <img :src="`https://api.dicebear.com/7.x/avatars/svg?seed=${profile.id}`" alt="avatar" class="avatar" />-->
+<!--        <div class="tweet-content">-->
+<!--          <div class="tweet-header">-->
+<!--            <span class="author">{{ profile.name }}</span>-->
+<!--            <span class="timestamp">{{ tweet.timestamp }}</span>-->
+<!--          </div>-->
+<!--          <p class="text">{{ tweet.content }}</p>-->
+<!--          <div class="tweet-actions">-->
+<!--            <button class="action-btn">-->
+<!--              💬 {{ Math.floor(Math.random() * 10) }}-->
+<!--            </button>-->
+<!--            <button class="action-btn">-->
+<!--              🔄 {{ tweet.retweets }}-->
+<!--            </button>-->
+<!--            <button class="action-btn">-->
+<!--              ❤️ {{ tweet.likes }}-->
+<!--            </button>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </article>-->
+<!--    </div>-->
   </div>
 </template>
 
@@ -235,4 +251,37 @@ onMounted(async () => {
     color: var(--color-primary);
   }
 }
+
+.btn1 {
+  display: flex;
+  margin-right: 8rem;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  textarea {
+    width: 100%;
+    min-height: 100px;
+    background: transparent;
+    border: none;
+    color: var(--color-text);
+    font-size: 1.25rem;
+    resize: none;
+    padding: 0.5rem;
+
+    &:focus {
+      outline: none;
+    }
+
+    &::placeholder {
+      color: var(--color-text-secondary);
+    }
+  }
+}
+
+
 </style>

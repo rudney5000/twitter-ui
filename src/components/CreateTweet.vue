@@ -11,29 +11,13 @@ const tweetMessage = ref<string>('');
 const editingTweetId = ref<number | null>(null);
 
 const handleTweet = async () => {
-  if (!authStore.isAuthenticated) {
-    console.error('User is not authenticated');
-    return;
-  }
   try {
-    if (editingTweetId.value) {
-      await tweetStore.editTweet({ id: editingTweetId.value, message: tweetMessage.value });
-      console.log('Tweet edited successfully!');
-    } else {
-      await tweetStore.addTweet({ message: tweetMessage.value });
-      console.log('Tweet created successfully!');
-    }
-
+    await tweetStore.addTweet({ message: tweetMessage.value });
     tweetMessage.value = '';
     editingTweetId.value = null;
   } catch (error) {
     console.error('Error handling tweet:', error);
   }
-};
-
-const initializeEdit = (tweetId: number, message: string) => {
-  editingTweetId.value = tweetId;
-  tweetMessage.value = message;
 };
 </script>
 

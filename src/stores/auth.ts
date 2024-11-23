@@ -9,15 +9,19 @@ export const useAuthStore = defineStore('auth', () => {
     const isAuthenticated = ref(false)
 
     const login = async (username: string, password: string) => {
-        // TODO: Implement actual login logic with API
         try {
             const response = await Http.post(`/auth/access_token`, { username, password });
-            const { token, user: userData } = response.data;
+            const { idToken, user: userData } = response.data;
 
-            localStorage.setItem("token", token);
+            localStorage.setItem("token", idToken);
 
-            user.value = userData;
+            if (userData) {
+                localStorage.setItem("user", JSON.stringify(userData));
+            }
+
+            user.value = userData || null;
             isAuthenticated.value = true;
+
         } catch (error) {
             console.error("Login failed:", error);
             throw error;
@@ -25,8 +29,6 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     const register = async (username: string, password: string) => {
-        // TODO: Implement actual registration logic with API
-
         try {
             const response = await Http.post(`/accounts/register`, {
                 username,
@@ -47,8 +49,28 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
+    const restoreSession = () => {
+        const token = localStorage.getItem("token");
+        const storedUser = localStorage.getItem("user");
+
+        if (token) {
+            isAuthenticated.value = true;
+
+            try {
+                user.value = storedUser && storedUser !== "undefined" ? JSON.parse(storedUser) : null;
+            } catch (error) {
+                console.error("Error parsing stored user:", error);
+                user.value = null;
+                localStorage.removeItem("user");
+            }
+        } else {
+            logout();
+        }
+    };
+
     const logout = () => {
         localStorage.removeItem("token");
+        localStorage.removeItem("user");
         user.value = null;
         isAuthenticated.value = false;
     }
@@ -58,6 +80,7 @@ export const useAuthStore = defineStore('auth', () => {
         isAuthenticated,
         login,
         register,
-        logout
+        logout,
+        restoreSession
     }
 })

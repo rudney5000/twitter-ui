@@ -8,10 +8,11 @@ import {useAuthStore} from "../stores/auth.ts";
 const tweetStore = useTweetStore()
 const authStore = useAuthStore()
 
-
 onMounted(() => {
   if (authStore.isAuthenticated) {
-    tweetStore.loadTweets(1, 10);
+    tweetStore.fetchTweets(0, 26).catch((error) => {
+      console.error("Failed to fetch tweets on mount:", error);
+    });
   } else {
     console.warn("L'utilisateur n'est pas authentifié.");
   }
@@ -21,7 +22,9 @@ watch(
     () => authStore.isAuthenticated,
     (isAuthenticated) => {
       if (isAuthenticated) {
-        tweetStore.loadTweets();
+        tweetStore.fetchTweets(0, 26).catch((error) => {
+          console.error("Failed to fetch tweets after auth change:", error);
+        });
       }
     }
 );

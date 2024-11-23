@@ -2,7 +2,7 @@
 
 import {useRouter} from "vue-router";
 import {useAuthStore} from "../stores/auth.ts";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import { required, email as emailValidator, minLength } from '@vuelidate/validators'
 import useVuelidate from "@vuelidate/core";
 
@@ -32,6 +32,10 @@ const handleLogin = async () => {
     console.error('Login failed:', error)
   }
 }
+
+onMounted(() => {
+  authStore.restoreSession();
+});
 </script>
 
 <template>
