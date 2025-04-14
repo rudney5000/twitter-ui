@@ -11,13 +11,80 @@ const authStore = useAuthStore()
 const formData = ref({
   username: '',
   password: '',
-  confirmPassword: ''
+  confirmPassword: '',
+  captcha: ''
 })
+
+const captchaCode = ref('')
+const captchaError = ref('')
+const captchaImage = ref('')
+
+const generateCaptcha = () => {
+  const canvas = document.createElement('canvas')
+  const ctx = canvas.getContext('2d')!
+  canvas.width = 150
+  canvas.height = 50
+
+  // Fond avec du bruit
+  ctx.fillStyle = '#f0f0f0'
+  ctx.fillRect(0, 0, canvas.width, canvas.height)
+  for (let i = 0; i < 50; i++) {
+    ctx.fillStyle = `rgba(0,0,0,0.1)`
+    ctx.fillRect(
+      Math.random() * canvas.width,
+      Math.random() * canvas.height,
+      2,
+      2
+    )
+  }
+
+  // Générer le texte
+  const chars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ' // Caractères sans ambiguïté
+  let result = ''
+  for (let i = 0; i < 6; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length))
+  }
+  captchaCode.value = result
+
+  // Dessiner le texte avec des déformations
+  ctx.font = 'bold 24px sans-serif'
+  ctx.textBaseline = 'middle'
+  for (let i = 0; i < result.length; i++) {
+    ctx.save()
+    ctx.translate(25 + i * 20, 25)
+    ctx.rotate((Math.random() - 0.5) * 0.4)
+    ctx.fillStyle = `hsl(${Math.random() * 360}, 70%, 40%)`
+    ctx.fillText(result[i], 0, 0)
+    ctx.restore()
+  }
+
+  // Ajouter des lignes aléatoires
+  for (let i = 0; i < 4; i++) {
+    ctx.beginPath()
+    ctx.strokeStyle = `rgba(0,0,0,0.2)`
+    ctx.lineWidth = 1
+    ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height)
+    ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height)
+    ctx.stroke()
+  }
+
+  return canvas.toDataURL()
+}
+
+const refreshCaptcha = () => {
+  captchaImage.value = generateCaptcha()
+}
+
+refreshCaptcha()
 
 const rules = {
   username: { required, email: emailValidator },
   password: { required, minLength: minLength(6) },
-  confirmPassword: { required, sameAsPassword: sameAs(computed(() => formData.value.password)) }
+  confirmPassword: { required, sameAsPassword: sameAs(computed(() => formData.value.password)) },
+  captcha: {
+    required,
+    matchesCaptcha: (value: string) => value === captchaCode.value
+  }
 }
 
 const v$ = useVuelidate(rules, formData)
@@ -25,6 +92,13 @@ const v$ = useVuelidate(rules, formData)
 const handleRegister = async () => {
   const isFormCorrect = await v$.value.$validate()
   if (!isFormCorrect) return
+
+  if (formData.value.captcha !== captchaCode.value) {
+    captchaError.value = 'Invalid CAPTCHA code'
+    refreshCaptcha()
+    formData.value.captcha = ''
+    return
+  }
 
   try {
     await authStore.register(
@@ -34,6 +108,8 @@ const handleRegister = async () => {
     router.push('/home')
   } catch (error) {
     console.error('Registration failed:', error)
+    refreshCaptcha()
+    formData.value.captcha = ''
   }
 }
 </script>
@@ -83,6 +159,24 @@ const handleRegister = async () => {
           <div class="error-message" v-if="v$.confirmPassword.$error">
             <span v-if="v$.confirmPassword.required.$invalid">Please confirm your password</span>
             <span v-else-if="v$.confirmPassword.sameAsPassword.$invalid">Passwords must match</span>
+          </div>
+        </div>
+        <div class="form-group captcha-group">
+          <label for="captcha">CAPTCHA Verification</label>
+          <div class="captcha-container">
+            <img :src="captchaImage" class="captcha-code" @click="refreshCaptcha" alt="CAPTCHA" />
+            <button type="button" class="refresh-btn" @click="refreshCaptcha">🔄</button>
+          </div>
+          <input
+              id="captcha"
+              type="text"
+              v-model="formData.captcha"
+              :class="{ 'error': v$.captcha.$error || captchaError }"
+              placeholder="Enter the code above"
+          />
+          <div class="error-message" v-if="v$.captcha.$error || captchaError">
+            <span v-if="v$.captcha.required.$invalid">CAPTCHA is required</span>
+            <span v-else-if="v$.captcha.matchesCaptcha.$invalid || captchaError">Invalid CAPTCHA code</span>
           </div>
         </div>
         <button type="submit" class="btn" :disabled="v$.$invalid">Sign up</button>
@@ -150,6 +244,39 @@ const handleRegister = async () => {
 
   &:hover {
     background-color: var(--color-primary);
+  }
+}
+.captcha-group {
+  .captcha-container {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+    align-items: center;
+  }
+
+  .captcha-code {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 1.25rem;
+    letter-spacing: 3px;
+    cursor: pointer;
+    user-select: none;
+    flex: 1;
+  }
+
+  .refresh-btn {
+    background: none;
+    border: none;
+    color: var(--color-text);
+    cursor: pointer;
+    padding: 0.5rem;
+    font-size: 1.25rem;
+
+    &:hover {
+      color: var(--color-primary);
+    }
   }
 }
 </style>
